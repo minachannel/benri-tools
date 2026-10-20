@@ -1,0 +1,22 @@
+"use strict";
+(()=>{
+const $=id=>document.getElementById(id), WORK="benri-tools-work-v2", EXP="benri-tools-expenses-v1";
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+const money=n=>Math.round(n).toLocaleString("ja-JP")+"円";
+const min=t=>{if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(t||""))return NaN;const [h,m]=t.split(":").map(Number);return h*60+m};
+const pay=r=>{if(!r)return null;const wage=Number(r.wage),rest=Number(r.breakMinutes),length=min(r.end)-min(r.start)+(r.overnight?1440:0);if(!Number.isFinite(wage)||wage<0||wage>1000000||!Number.isInteger(rest)||rest<0||length<=0||length>1440||rest>length)return null;return {amount:r.payType==="daily"?wage:wage*(length-rest)/60,minutes:length-rest}};
+const iso=d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&!Number.isNaN(new Date(d+"T12:00:00").getTime());
+function sum(from,to,filter){const work=read(WORK,{places:[],shifts:{}}),expenses=read(EXP,[]),totals=new Map(),month=Array(12).fill(0);let count=0,minutes=0,total=0,expenseTotal=0;
+for(const [date,records] of Object.entries(work.shifts||{})){if(date<from||date>to||!iso(date)||!records||typeof records!=="object")continue;for(const [id,rec] of Object.entries(records)){const place=(work.places||[]).find(p=>p.id===id);if(!place||(filter&&filter!==id))continue;const result=pay(rec);if(!result)continue;count++;minutes+=result.minutes;total+=result.amount;totals.set(id,(totals.get(id)||0)+result.amount);month[Number(date.slice(5,7))-1]+=result.amount}}
+if(Array.isArray(expenses))for(const e of expenses){if(e.date>=from&&e.date<=to&&(!filter||e.place===filter)&&Number.isFinite(Number(e.amount)))expenseTotal+=Number(e.amount)}
+return {work,total,count,minutes,totals,month,expenseTotal};}
+function updateOptions(){const w=read(WORK,{places:[],shifts:{}}),select=$("report-place"),old=select.value;select.replaceChildren();const all=document.createElement("option");all.value="";all.textContent="全職場合計";select.append(all);for(const p of w.places||[]){const o=document.createElement("option");o.value=p.id;o.textContent=p.name;select.append(o)}select.value=[...select.options].some(o=>o.value===old)?old:"";
+const years=new Set([new Date().getFullYear()]);for(const d of Object.keys(w.shifts||{}))if(iso(d))years.add(Number(d.slice(0,4)));const y=$("report-year"),prev=y.value;y.replaceChildren();for(const year of [...years].sort((a,b)=>b-a)){const o=document.createElement("option");o.value=year;o.textContent=year+"年";y.append(o)}if([...y.options].some(o=>o.value===prev))y.value=prev;}
+function show(){updateOptions();const year=$("report-year").value,filter=$("report-place").value;const a=sum(year+"-01-01",year+"-12-31",filter);$("annual-pay").textContent=money(a.total);$("annual-stats").textContent=`勤務 ${a.count}件 ／ 実働 ${(a.minutes/60).toFixed(2)}時間`;
+const months=$("annual-months");months.replaceChildren();a.month.forEach((amount,i)=>{const row=document.createElement("div");row.className="pay-row";const l=document.createElement("span");l.textContent=(i+1)+"月";const v=document.createElement("strong");v.textContent=money(amount);row.append(l,v);months.append(row)});}
+function period(){const from=$("report-from").value,to=$("report-to").value;if(!iso(from)||!iso(to)||from>to){$("report-error").textContent="開始日と終了日を正しく指定してください。";return}$("report-error").textContent="";const a=sum(from,to,$("report-place").value);$("period-pay").textContent=money(a.total);$("period-stats").textContent=`勤務 ${a.count}件 ／ 実働 ${(a.minutes/60).toFixed(2)}時間`;
+const list=$("period-places");list.replaceChildren();for(const [id,amount] of a.totals){const row=document.createElement("div");row.className="pay-row";const label=document.createElement("span");label.textContent=a.work.places.find(p=>p.id===id)?.name||"勤務先";const v=document.createElement("strong");v.textContent=money(amount);row.append(label,v);list.append(row)}$("period-expenses").textContent="指定期間の登録経費："+money(a.expenseTotal)+"（給与とは別集計）";}
+$("report-year").addEventListener("change",show);$("report-place").addEventListener("change",()=>{show();period()});$("report-run").addEventListener("click",period);
+document.addEventListener("calendar-rendered",()=>{show();period()});
+const today=new Date(),y=today.getFullYear();$("report-from").value=y+"-01-01";$("report-to").value=y+"-12-31";show();period();
+})();
