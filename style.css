@@ -21,3 +21,21 @@
 #work-place{width:100%;padding:12px;margin-top:6px;border:1px solid #c7d2e0;border-radius:10px;font-size:16px;background:white}
 
 .day.holiday{background:#fef3c7;border:2px solid #eab308}.day.multi-picked{outline:3px solid #16a34a;outline-offset:-3px}.holiday-label{display:block;font-size:10px;color:#92400e;font-weight:800}#work-history,#event-history{width:100%;padding:12px;margin-top:6px;border:1px solid #c7d2e0;border-radius:10px;background:white;font-size:16px}
+
+#expense-panel input[type=file]{font-size:14px}
+#expense-panel select,#place-pay-type,#work-pay-type{width:100%;padding:12px;margin-top:6px;border:1px solid #c7d2e0;border-radius:10px;background:white;font-size:16px}
+.expense-entry{padding:10px 0;border-bottom:1px solid #d7e0ee;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.expense-entry button{padding:7px;border-radius:8px;border:1px solid #c7d2e0;background:white}
+
+.day.has-entry{border-color:#0f766e;background:#ecfdf5}
+.day.has-entry.selected{background:#dceaff}
+.day.has-entry.holiday{background:#fef3c7}
+.entry-indicator{font-size:9px;font-weight:800;color:#0f766e;line-height:1.1;white-space:normal;text-align:center;letter-spacing:0}
+#day-popup{border:0;border-radius:16px;padding:20px;width:min(92vw,440px);max-height:80vh;overflow:auto;box-shadow:0 12px 55px #0004;color:#182438}
+#day-popup::backdrop{background:#0008}
+.popup-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.popup-head h3{margin:0;font-size:18px}
+.popup-head button{background:#f1f5f9;border:0;border-radius:8px;padding:10px;font-size:17px}
+.popup-entry{display:flex;gap:12px;border-bottom:1px solid #e1e7f0;padding:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.popup-entry strong{min-width:35px;color:#2563eb}
+.popup-entry span{flex:1}

@@ -19,7 +19,7 @@ const calc=r=>{
  const wage=Number(r.wage),b=Number(r.breakMinutes);
  const duration=mins(r.end)-mins(r.start)+(r.overnight?1440:0);
  if(!Number.isFinite(wage)||wage<0||wage>1000000||!Number.isInteger(b)||b<0||duration<=0||duration>1440||b>duration)return null;
- return {minutes:duration-b,pay:wage*(duration-b)/60};
+ return {minutes:duration-b,pay:r.payType==="daily"?wage:wage*(duration-b)/60};
 };
 function persist(){
  try{localStorage.setItem(KEY,JSON.stringify(state));return true;}
@@ -35,7 +35,7 @@ function placeUI(){
  const list=$("place-list");list.replaceChildren();
  state.places.forEach(p=>{
   const row=document.createElement("div");row.className="place-row";
-  const name=document.createElement("span");name.textContent=`${p.name}（通常時給 ${money(p.wage)}）`;
+  const name=document.createElement("span");name.textContent=`${p.name}（${p.payType==="daily"?"日給":"時給"} ${money(p.wage)}）`;
   const edit=document.createElement("button");edit.type="button";edit.textContent="編集";
   edit.addEventListener("click",()=>{
    const newName=prompt("職場名",p.name);if(newName===null)return;
@@ -59,14 +59,15 @@ function placeUI(){
  });
 }
 function currentRecord(){return state.shifts[selected]?.[$("work-place").value];}
-function formRecord(){return {wage:Number($("work-wage").value),start:$("work-start").value,end:$("work-end").value,breakMinutes:Number($("work-break").value),overnight:$("work-overnight").checked};}
+function formRecord(){return {payType:$("work-pay-type").value,wage:Number($("work-wage").value),start:$("work-start").value,end:$("work-end").value,breakMinutes:Number($("work-break").value),overnight:$("work-overnight").checked};}
 function preview(){
+ $("work-wage-label").textContent=$("work-pay-type").value==="daily"?"この日の日給（円）":"この日の時給（円）";
  const r=$("work-wage").value!==""&&$("work-break").value!==""?calc(formRecord()):null;
- $("daily-pay").textContent=r?`実働 ${(r.minutes/60).toFixed(2)}時間・日給目安 ${money(r.pay)}`:"時給・出退勤時間・休憩を確認してください。";
+ $("daily-pay").textContent=r?`実働 ${(r.minutes/60).toFixed(2)}時間・給与目安 ${money(r.pay)}`:"時給・出退勤時間・休憩を確認してください。";
 }
 function loadSelected(){
  const place=getPlace($("work-place").value),rec=currentRecord();
- $("work-wage").value=rec?.wage??place?.wage??1200;
+ $("work-pay-type").value=rec?.payType??place?.payType??"hourly";$("work-wage").value=rec?.wage??place?.wage??1200;
  $("work-start").value=rec?.start??"09:00";$("work-end").value=rec?.end??"18:00";
  $("work-break").value=rec?.breakMinutes??60;$("work-overnight").checked=!!rec?.overnight;
  $("delete-work").hidden=!rec;
@@ -118,7 +119,7 @@ $("workplace-form").addEventListener("submit",e=>{
  e.preventDefault();const name=$("place-name").value.trim(),raw=$("place-wage").value,wage=Number(raw);
  if(!name||name.length>50||raw===""||!Number.isInteger(wage)||wage<0||wage>1000000){$("place-status").textContent="職場名と時給を確認してください。";return;}
  const id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
- state.places.push({id,name,wage});
+ state.places.push({id,name,wage,payType:$("place-pay-type").value});
  if(!persist()){state.places.pop();return;}
  $("place-name").value="";placeUI();$("work-place").value=id;render();$("place-status").textContent="職場を登録しました。";
 });
@@ -140,7 +141,7 @@ $("delete-work").addEventListener("click",()=>{
  if(!persist()){state.shifts[selected]=backup;return;}
  render();$("work-status").textContent="勤務を削除しました。";
 });
-["work-wage","work-start","work-end","work-break","work-overnight"].forEach(id=>$(id).addEventListener("input",preview));
+["work-pay-type","work-wage","work-start","work-end","work-break","work-overnight"].forEach(id=>$(id).addEventListener("input",preview));
 document.addEventListener("calendar-rendered",renderWork);
 placeUI();renderWork();
 })();

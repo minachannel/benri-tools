@@ -22,7 +22,7 @@ function render(){
   if(date===iso(today.getFullYear(),today.getMonth(),today.getDate()))button.classList.add("today");
   if(date===selected){button.classList.add("selected");button.setAttribute("aria-pressed","true");}else button.setAttribute("aria-pressed","false");
   if(Array.isArray(data[date])&&data[date].length){const dot=document.createElement("span");dot.className="dot";dot.setAttribute("aria-hidden","true");button.append(dot);}
-  button.addEventListener("click",()=>{if(window.holidayTap&&window.holidayTap(date))return;selected=date;clearEdit();render();});grid.append(button);
+  button.addEventListener("click",()=>{if(window.holidayTap&&window.holidayTap(date))return;selected=date;clearEdit();render();document.dispatchEvent(new CustomEvent("calendar-day-tapped",{detail:{date}}));});grid.append(button);
  }
  renderEvents();
  document.dispatchEvent(new CustomEvent("calendar-rendered",{detail:{year,month,selected}}));
