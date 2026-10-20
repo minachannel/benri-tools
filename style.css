@@ -1,0 +1,23 @@
+ :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;color:#182438;background:#f2f5fa}*{box-sizing:border-box}body{margin:0}header{background:#2563eb;color:white;padding:26px 18px}header>div,main,footer{max-width:620px;margin:auto}h1{margin:0;font-size:26px}header p{margin:8px 0 0;color:#e7eeff}main{padding:18px}nav{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}nav a{border:1px solid #d7e0ee;background:white;border-radius:12px;padding:14px 5px;font-size:15px;font-weight:700;color:#27364c;text-decoration:none;text-align:center}nav a[aria-current=page]{background:#dceaff;border-color:#2563eb;color:#154db5}section{background:white;border-radius:18px;padding:22px;box-shadow:0 4px 18px #23344a0d}h2{margin:0 0 8px;font-size:22px}.hint,.explain{color:#536277;font-size:14px;line-height:1.8}label{display:block;margin-top:16px;font-size:14px;font-weight:700}input{width:100%;border:1px solid #c7d2e0;border-radius:10px;padding:12px;margin-top:6px;font-size:18px;color:#152238}button.calc{width:100%;margin-top:22px;border:0;background:#2563eb;color:white;border-radius:12px;padding:15px;font-size:17px;font-weight:700}.result{margin-top:18px;padding:18px;background:#eaf2ff;border-radius:12px;font-size:22px;font-weight:800;overflow-wrap:anywhere}.result:empty{display:none}footer{padding:4px 20px 30px;font-size:12px;color:#65748a;line-height:1.7}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+/* Calendar */
+.calendar-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:16px 0}.calendar-toolbar button,.event-actions button{border:1px solid #c7d2e0;background:#fff;border-radius:10px;padding:10px 13px;color:#182438;font-size:15px}.calendar-toolbar strong{font-size:19px}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.weekday{text-align:center;font-size:12px;font-weight:700;color:#536277;padding:8px 0}.day{position:relative;min-height:54px;background:#f8fafc;border:1px solid #e1e7f0;border-radius:9px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:15px;color:#182438}.day[disabled]{visibility:hidden}.day.today{border:2px solid #2563eb}.day.selected{background:#dceaff}.day .dot{height:6px;width:6px;border-radius:50%;background:#2563eb}.day:focus-visible{outline:3px solid #f59e0b}.event-item{border-bottom:1px solid #e1e7f0;padding:12px 0;overflow-wrap:anywhere}.event-item:last-child{border-bottom:0}.event-actions{display:flex;gap:8px;margin-top:8px}.event-actions button{font-size:13px;padding:6px 10px}.calendar-form{margin-top:18px;padding-top:12px;border-top:1px solid #e1e7f0}.calendar-form textarea{width:100%;min-height:76px;border:1px solid #c7d2e0;border-radius:10px;padding:12px;font:inherit;margin-top:6px}.calendar-form button{margin-top:12px}.status{font-size:13px;color:#536277;min-height:1.5em}@media(max-width:390px){.day{min-height:47px;font-size:13px}.calendar-grid{gap:3px}section{padding:16px}}
+
+/* Work calendar */
+.salary-summary{padding:16px;background:#eaf2ff;border-radius:14px;margin:14px 0}
+.salary-amount{font-size:28px;font-weight:800;color:#154db5;margin:5px 0}
+.work-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.work-check{display:flex;align-items:center;gap:8px;font-weight:500}
+.work-check input{width:auto;margin:0}
+.secondary-button{width:100%;margin-top:10px;padding:12px;border:1px solid #c7d2e0;border-radius:10px;background:white;font-size:15px}
+.day .work-dot{width:7px;height:7px;background:#16a34a;border-radius:50%}
+.day .work-small{font-size:9px;color:#166534;font-weight:700;line-height:1.1}
+@media(max-width:390px){.day .work-small{font-size:8px}}
+
+.pay-row,.place-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #d7e0ee;flex-wrap:wrap}
+.pay-row strong{white-space:nowrap}
+.place-row span{flex:1;min-width:140px}
+.place-row button{border:1px solid #c7d2e0;background:#fff;border-radius:8px;padding:7px 10px}
+#workplace-breakdown{margin-top:10px}
+#work-place{width:100%;padding:12px;margin-top:6px;border:1px solid #c7d2e0;border-radius:10px;font-size:16px;background:white}
+
+.day.holiday{background:#fef3c7;border:2px solid #eab308}.day.multi-picked{outline:3px solid #16a34a;outline-offset:-3px}.holiday-label{display:block;font-size:10px;color:#92400e;font-weight:800}#work-history,#event-history{width:100%;padding:12px;margin-top:6px;border:1px solid #c7d2e0;border-radius:10px;background:white;font-size:16px}
