@@ -43,7 +43,7 @@ function decorate(){const map=holidays(year),prefix=`${year}-${pad(month+1)}-`;
  const leap=year%4===0&&(year%100!==0||year%400===0);
  const legend=document.getElementById('holiday-legend');if(legend)legend.textContent=`日曜・祝日＝赤系／土曜＝青系／祝日には「祝」表示。${year}年は${leap?'閏年（2月29日あり）':'平年'}。祝日は日本の祝日法に基づく計算値です。`;
 }
-function showHoliday(e){const map=holidays(year),name=map.get(e.detail.date);if(!name)return;
+function showHoliday(e){if(window.v17QuickMode)return;const map=holidays(year),name=map.get(e.detail.date);if(!name)return;
  const popup=document.getElementById('day-popup'),content=document.getElementById('popup-content');if(!popup||!content)return;
  if(!popup.open){document.getElementById('popup-title').textContent=e.detail.date.replaceAll('-','/')+' の登録内容';content.replaceChildren();popup.showModal();}
  const row=document.createElement('div');row.className='popup-entry';const label=document.createElement('strong');label.textContent='祝日';const value=document.createElement('span');value.textContent=name;row.append(label,value);content.prepend(row);

@@ -11,7 +11,7 @@ function decorate(){const all=entries(),prefix=`${year}-${pad(month+1)}-`;
 document.querySelectorAll("#calendar .day").forEach(button=>{const n=Number(button.firstChild?.textContent),items=all[prefix+pad(n)];if(!items?.length)return;
 button.classList.add("has-entry","has-insurance");const tag=document.createElement("span");tag.className="entry-indicator";tag.textContent="保";button.append(tag);button.setAttribute("aria-label",button.getAttribute("aria-label")+"、保険料の支払予定あり");});}
 document.addEventListener("calendar-rendered",decorate);
-document.addEventListener("calendar-day-tapped",e=>{const items=entries()[e.detail.date];if(!items?.length)return;
+document.addEventListener("calendar-day-tapped",e=>{if(window.v17QuickMode)return;const items=entries()[e.detail.date];if(!items?.length)return;
 const dlg=document.getElementById("day-popup"),content=document.getElementById("popup-content");if(!dlg||!content)return;
 if(!dlg.open){document.getElementById("popup-title").textContent=e.detail.date.replaceAll("-","/")+" の登録内容";content.replaceChildren();dlg.showModal();}
 for(const item of items){const row=document.createElement("div");row.className="popup-entry";const title=document.createElement("strong");title.textContent="保険";const text=document.createElement("span");text.textContent=`${item.name}：${Number(item.amount).toLocaleString("ja-JP")}円（予定）`;row.append(title,text);content.append(row);}});

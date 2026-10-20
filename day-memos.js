@@ -75,6 +75,6 @@ $("popup-edit").addEventListener("click",()=>{
 });
 $("day-popup").addEventListener("click",e=>{if(e.target===$("day-popup"))$("day-popup").close();});
 document.addEventListener("calendar-rendered",render);
-document.addEventListener("calendar-day-tapped",e=>showPopup(e.detail.date));
+document.addEventListener("calendar-day-tapped",e=>{if(window.v17QuickMode)return;if(window.v17QuickMode)return;showPopup(e.detail.date)});
 render();
 })();

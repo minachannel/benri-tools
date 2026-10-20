@@ -26,12 +26,24 @@ function updateTargets(){
  choices($("extra-target"),extraCard?state.cards:state.accounts,extraCash?"支払い先なし":"先に登録");
  $("extra-target").disabled=extraCash;
 }
-function itemRow(container,label,onDelete){
+function itemRow(container,label,onDelete,onEdit){
  const row=document.createElement("div");row.className="pay-row";
  const text=document.createElement("span");text.textContent=label;
  const del=document.createElement("button");del.type="button";del.textContent="削除";del.className="secondary-button";del.style.width="auto";del.style.marginTop="0";
  del.addEventListener("click",()=>{if(confirm("この登録を削除しますか？"))onDelete()});
- row.append(text,del);container.append(row);
+ if(onEdit){const edit=document.createElement("button");edit.type="button";edit.textContent="編集";edit.className="secondary-button";edit.style.width="auto";edit.style.marginTop="0";edit.addEventListener("click",onEdit);row.append(text,edit,del);}else row.append(text,del);container.append(row);
+}
+const EDIT_FIELDS={accounts:[['name','口座名','text'],['balance','現在残高（空欄で未設定）','number']],cards:[['name','カード名','text'],['account','引落口座','account'],['close','締め日','day'],['pay','引落日','day'],['offset','引落までの月数','offset']],fixed:[['name','項目名','text'],['amount','金額（円）','number'],['method','支払方法','method'],['target','口座・カード','target'],['day','支払日','day'],['start','開始月','month']],extras:[['name','内容','text'],['amount','金額（円）','number'],['method','支払方法','method'],['target','口座・カード','target'],['date','支出日','date']]};
+function openEdit(group,item){
+ let dialog=document.getElementById('v17-edit-dialog');if(!dialog){dialog=document.createElement('dialog');dialog.id='v17-edit-dialog';document.body.append(dialog)}
+ dialog.replaceChildren();const heading=document.createElement('h3');heading.textContent='登録内容を編集';dialog.append(heading);
+ const form=document.createElement('form');form.method='dialog';form.className='v17-edit-form';const fields={};
+ function addOption(sel,value,label){const o=document.createElement('option');o.value=String(value);o.textContent=label;sel.append(o)}
+ function fillTarget(){if(!fields.target)return;const previous=fields.target.value;fields.target.replaceChildren();const method=fields.method.value;const choices=method==='card'?state.cards:method==='account'?state.accounts:[];addOption(fields.target,'',method==='cash'?'支払先なし':'支払先を選択');choices.forEach(x=>addOption(fields.target,x.id,x.name));fields.target.value=choices.some(x=>x.id===previous)?previous:'';fields.target.disabled=method==='cash'}
+ for(const [key,label,type] of EDIT_FIELDS[group]){const lab=document.createElement('label');lab.textContent=label;const el=['account','day','offset','method','target'].includes(type)?document.createElement('select'):document.createElement('input');if(el.tagName==='INPUT')el.type=type;el.name=key;el.required=!['balance','target'].includes(key);if(type==='account')state.accounts.forEach(x=>addOption(el,x.id,x.name));if(type==='day'){for(let d=1;d<=28;d++)addOption(el,d,d+'日');addOption(el,'end','月末')}if(type==='offset')for(let d=0;d<=2;d++)addOption(el,d,d+'か月後');if(type==='method'){addOption(el,'account','口座引落');addOption(el,'card','カード');addOption(el,'cash','現金・その他')}if(type==='target'){}else el.value=item[key]??'';fields[key]=el;lab.append(el);form.append(lab)}
+ if(fields.method)fields.method.addEventListener('change',fillTarget);if(fields.target){fillTarget();fields.target.value=item.target||''}
+ const buttons=document.createElement('div');buttons.className='v17-edit-actions';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='キャンセル';cancel.addEventListener('click',()=>dialog.close());const save=document.createElement('button');save.type='submit';save.className='calc';save.textContent='変更を保存';buttons.append(cancel,save);form.append(buttons);dialog.append(form);
+ form.addEventListener('submit',e=>{e.preventDefault();const next={...item};for(const [key,,type] of EDIT_FIELDS[group]){let value=fields[key].value;if(type==='number'||type==='offset')value=value===''&&key==='balance'?null:Number(value);next[key]=value}if(next.name&&!next.name.trim())return;if(next.amount!==undefined&&(!Number.isSafeInteger(next.amount)||next.amount<0))return;if(next.balance!==undefined&&next.balance!==null&&(!Number.isSafeInteger(next.balance)||next.balance<0))return;if(next.method==='cash')next.target='';if(next.method&&!paymentTarget(next.method,next.target)){alert('有効な支払い先を選択してください');return}const old={...item};Object.assign(item,next);if(!store()){Object.assign(item,old);return}dialog.close();render();$('finance-status').textContent='変更を保存しました。';});dialog.showModal();
 }
 function remove(group,item){const backup=state[group];state[group]=backup.filter(x=>x.id!==item.id);if(!store())state[group]=backup;render();}
 function form(formId,callback){$(formId).addEventListener("submit",e=>{e.preventDefault();try{callback()}catch(err){$("finance-status").textContent="入力内容を確認してください。"}})}
@@ -78,10 +90,10 @@ function income(monthKey){
 }
 function render(){
  updateTargets();
- const a=$("accounts");a.replaceChildren();state.accounts.forEach(x=>itemRow(a,`${x.name} ／ 残高 ${x.balance===null?"未設定":money(x.balance)}`,()=>remove("accounts",x)));
- const c=$("cards");c.replaceChildren();state.cards.forEach(x=>itemRow(c,`${x.name} ／ ${state.accounts.find(a=>a.id===x.account)?.name||"口座未登録"} ／ ${x.close==="end"?"月末":x.close+"日"}締め・${x.offset===0?"当月":x.offset===1?"翌月":"翌々月"}${x.pay==="end"?"末日":x.pay+"日"}引落`,()=>remove("cards",x)));
- const f=$("fixed-list");f.replaceChildren();state.fixed.forEach(x=>itemRow(f,`${x.name} ${money(x.amount)} ／ ${x.start}〜 毎月`,()=>remove("fixed",x)));
- const e=$("extra-list");e.replaceChildren();state.extras.filter(x=>x.date.startsWith($("fm").value)).forEach(x=>itemRow(e,`${x.date} ${x.name} ${money(x.amount)}`,()=>remove("extras",x)));
+ const a=$("accounts");a.replaceChildren();state.accounts.forEach(x=>itemRow(a,`${x.name} ／ 残高 ${x.balance===null?"未設定":money(x.balance)}`,()=>remove("accounts",x),()=>openEdit("accounts",x)));
+ const c=$("cards");c.replaceChildren();state.cards.forEach(x=>itemRow(c,`${x.name} ／ ${state.accounts.find(a=>a.id===x.account)?.name||"口座未登録"} ／ ${x.close==="end"?"月末":x.close+"日"}締め・${x.offset===0?"当月":x.offset===1?"翌月":"翌々月"}${x.pay==="end"?"末日":x.pay+"日"}引落`,()=>remove("cards",x),()=>openEdit("cards",x)));
+ const f=$("fixed-list");f.replaceChildren();state.fixed.forEach(x=>itemRow(f,`${x.name} ${money(x.amount)} ／ ${x.start}〜 毎月`,()=>remove("fixed",x),()=>openEdit("fixed",x)));
+ const e=$("extra-list");e.replaceChildren();state.extras.filter(x=>x.date.startsWith($("fm").value)).forEach(x=>itemRow(e,`${x.date} ${x.name} ${money(x.amount)}`,()=>remove("extras",x),()=>openEdit("extras",x)));
  const ym=$("fm").value;if(!/^\d{4}-\d\d$/.test(ym))return;
  const entries=entriesForMonth(ym),spending=entries.filter(x=>x.spent.startsWith(ym)),due=entries.filter(x=>x.due.startsWith(ym)&&x.method!=="cash");
  const salary=income(ym),spentTotal=spending.reduce((n,x)=>n+x.amount,0),dueTotal=due.reduce((n,x)=>n+x.amount,0);

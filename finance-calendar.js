@@ -33,7 +33,7 @@ function decorate(){
  });
 }
 document.addEventListener("calendar-rendered",decorate);
-document.addEventListener("calendar-day-tapped",e=>{
+document.addEventListener("calendar-day-tapped",e=>{if(window.v17QuickMode)return;
  const entries=schedule()[e.detail.date];if(!entries?.length)return;
  const popup=$("day-popup"),content=$("popup-content");if(!popup||!content)return;
  if(!popup.open){$("popup-title").textContent=e.detail.date.replaceAll("-","/")+" の登録内容";content.replaceChildren();popup.showModal();}
