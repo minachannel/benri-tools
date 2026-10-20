@@ -46,3 +46,19 @@
 .forecast-row{padding:12px;margin:8px 0;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;display:grid;gap:5px}
 .forecast-danger{background:#fff1f2;border-color:#e11d48;color:#9f1239}
 #deposit-list .secondary-button{width:auto;margin:0}
+/* Weekends and Japanese public holidays */
+#calendar .day.jpn-sunday,#calendar .day.jpn-holiday{background:#fff1f2;border-color:#fda4af;color:#9f1239}
+#calendar .day.jpn-saturday:not(.jpn-holiday){background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
+#calendar .day.jpn-holiday.selected,#calendar .day.jpn-sunday.selected,#calendar .day.jpn-saturday.selected{outline:3px solid #2563eb;outline-offset:1px}
+.jpn-holiday-label{display:block;font-size:10px;font-weight:800;color:#be123c;line-height:1.1}
+
+.manager-section{margin-top:24px;padding-top:12px;border-top:1px solid #cbd5e1}
+.manager-section h2{font-size:19px;margin:18px 0 12px}
+.manager-item{padding:12px 0;border-bottom:1px solid #dce3ed}
+.manager-item button{width:auto;padding:8px 12px;margin:6px 6px 0 0}
+.insurance-warning{border:2px solid #d97706;border-radius:12px;padding:12px;margin:12px 0;background:#fffbeb;color:#92400e;font-weight:700}
+.day.has-insurance{box-shadow:inset 0 -3px #e11d48}
+#insurance-year-dialog{border:0;border-radius:16px;max-width:min(92vw,440px);padding:22px;box-shadow:0 15px 50px #0004}
+#insurance-year-dialog::backdrop{background:#0008}
+
+#insurance-reserve-list .manager-item{margin:12px 0;padding:14px;border:1px solid #dce3ed;border-radius:12px}

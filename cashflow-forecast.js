@@ -30,6 +30,16 @@ const [sy,sm]=start.slice(0,7).split("-").map(Number),[ey,em]=end.slice(0,7).spl
 for(let step=-4;step<=20;step++){const [y,m]=shift(sy,sm,step),ym=`${y}-${pad(m)}`;if(ym>`${ey}-${pad(em)}`)break;
 for(const item of f.fixed||[]){if(item.start>ym)continue;push(item,date(y,m,last(y,m,item.day)))}}
 for(const item of f.extras||[])push(item,item.date);
+// Insurance renewals are additional scheduled debits, assigned to an account in the reserve planner.
+const policies=read("benri-tools-insurance-schedule-v1",[]),reserves=read("benri-tools-insurance-reserve-v1",{});
+for(const policy of Array.isArray(policies)?policies:[]){
+ const assigned=reserves?.[policy.id]?.account;if(!assigned||!/^\d{4}-\d\d-\d\d$/.test(policy.next))continue;
+ const [iy,im,idd]=policy.next.split("-").map(Number),cycle=Number(policy.cycle),amount=Number(policy.amount);
+ if(!Number.isInteger(cycle)||cycle<1||!Number.isFinite(amount)||amount<=0)continue;
+ const endYear=Number(end.slice(0,4));
+ for(let yy=iy;yy<=endYear;yy+=cycle){const due=date(yy,im,Math.min(idd,days(yy,im)));
+ if(due>=start&&due<=end)items.push({date:due,account:assigned,amount,name:`保険料：${policy.name}`,kind:"out"});}
+}
 return {items,accounts:f.accounts||[]};}
 function forecast(month){const today=isoToday(),start=month+"-01",[y,m]=month.split("-").map(Number),end=date(y,m,days(y,m)),rangeStart=today;
 const {items:outgoing,accounts}=payments(rangeStart,end),{items:salary,missing}=paydayItems(rangeStart,end);
@@ -55,6 +65,7 @@ if(!report.result.length){const p=document.createElement("p");p.className="hint"
 const deposits=$("deposit-list");deposits.replaceChildren();for(const d of cfg.deposits){const row=document.createElement("div");row.className="pay-row";const label=document.createElement("span");label.textContent=`${d.date} ${d.name} ${money(d.amount)}`;const button=document.createElement("button");button.type="button";button.className="secondary-button";button.textContent="削除";button.addEventListener("click",()=>{if(!confirm("この入金予定を削除しますか？"))return;const old=cfg.deposits;cfg.deposits=old.filter(x=>x.id!==d.id);if(!save())cfg.deposits=old;render()});row.append(label,button);deposits.append(row)}
 }
 $("fm").addEventListener("change",render);
+document.addEventListener("insurance-reserve-updated",render);
 for(const id of ["account-form","card-form","fixed-form","extra-form"]){$(id).addEventListener("submit",()=>setTimeout(render,0))}
 render();
 })();
