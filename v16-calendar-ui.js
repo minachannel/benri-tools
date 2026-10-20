@@ -4,11 +4,6 @@
  const selector=document.getElementById('week-start');
  const valid=['0','1','2','3','4','5','6'];
  try{const v=localStorage.getItem(KEY);if(valid.includes(v))selector.value=v;}catch{}
- // Calendar.js is loaded before this file and exposes render() globally.
- const original=window.render;
- if(typeof original==='function'){
-  window.render=function(){original();reorderWeek();};
- }
  function reorderWeek(){
   const grid=document.getElementById('calendar');if(!grid)return;
   const n=Number(selector.value),head=Array.from(grid.querySelectorAll('.weekday'));
@@ -30,8 +25,8 @@
  reorderWeek();
  const targets={
   'event-form':'fold-event-form','work-form':'fold-work-form','memo-form':'fold-memo-form',
-  'income-report':'income-report','holiday-panel':'holiday-panel','workplace-panel':'workplace-panel',
-  'expense-panel':'expense-panel','export-panel':'export-panel'
+  'income-report':'fold-income-report','holiday-panel':'holiday-panel','workplace-panel':'workplace-panel',
+  'expense-panel':'fold-expense-panel','export-panel':'export-panel'
  };
  function jump(id){const fold=document.getElementById(targets[id]||id);if(!fold)return; if(fold.tagName==='DETAILS')fold.open=true;fold.scrollIntoView({behavior:'smooth',block:'start'});}
  document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jump)));

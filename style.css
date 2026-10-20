@@ -77,3 +77,13 @@
 .v16-fold>.calendar-form,.v16-fold>form{margin:8px 12px 14px}
 .v16-fold:target{scroll-margin-top:12px}
 @media(max-width:420px){.v16-actions button{font-size:.78rem;padding:11px 2px}}
+
+/* v16.1: calendar first, readable on narrow iPhones */
+.v16-version{display:inline-block;margin-left:9px;padding:3px 8px;font-size:11px;vertical-align:middle;background:#dbeafe;color:#1d4ed8;border-radius:20px}
+.v16-quick{margin:12px 0;padding:14px;border:1px solid #c7d2fe;background:#eff6ff}
+.v16-fold{margin:10px 0}
+.v16-fold summary{font-size:15px}
+.calendar-toolbar{margin-top:4px}
+#calendar{margin-bottom:8px}
+#selected-title{margin-top:18px}
+@media(max-width:440px){main{padding-top:12px}.v16-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.v16-actions button{font-size:14px;padding:12px 4px}.v16-cal-settings{justify-content:flex-start}}
