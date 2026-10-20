@@ -62,3 +62,18 @@
 #insurance-year-dialog::backdrop{background:#0008}
 
 #insurance-reserve-list .manager-item{margin:12px 0;padding:14px;border:1px solid #dce3ed;border-radius:12px}
+/* v16 calendar usability */
+.v16-cal-settings{display:flex;gap:12px;align-items:center;justify-content:flex-end;margin:12px 0}
+.v16-cal-settings label{margin:0;white-space:nowrap;font-size:.9rem}
+.v16-cal-settings select{width:auto;max-width:160px;margin:0}
+.v16-quick{background:#f5f8ff;border:1px solid #dbeafe;border-radius:14px;padding:15px;margin:14px 0 20px}
+.v16-quick strong{display:block;margin-bottom:10px}
+.v16-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:16px}
+.v16-actions button{margin:0;padding:12px 3px;font-size:.86rem;border-radius:10px}
+.v16-quick label{display:block;margin-bottom:6px}
+.v16-quick select{margin:0}
+.v16-fold{border:1px solid #dce3ed;border-radius:12px;margin:12px 0;overflow:hidden}
+.v16-fold>summary{padding:16px;font-weight:700;cursor:pointer;background:#f7f9fc;list-style-position:inside}
+.v16-fold>.calendar-form,.v16-fold>form{margin:8px 12px 14px}
+.v16-fold:target{scroll-margin-top:12px}
+@media(max-width:420px){.v16-actions button{font-size:.78rem;padding:11px 2px}}
