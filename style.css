@@ -158,3 +158,59 @@ body.v173-menu-text .v174-shortcut-row a{font-size:12px}
 .v175-overlay{position:fixed;inset:0;background:#0b15248c;z-index:900}.v175-overlay[hidden]{display:none}.v175-drawer{position:fixed;z-index:901;top:0;bottom:0;left:0;width:min(82vw,330px);background:#fff;box-shadow:4px 0 25px #0003;transform:translateX(-110%);transition:transform .22s ease;padding:22px 16px;overflow-y:auto}.v175-drawer.open{transform:translateX(0)}.v175-drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.v175-drawer-head button{width:auto;margin:0}.v175-drawer-links{display:grid;gap:8px}.v175-drawer-links a{padding:13px;border-radius:12px;background:#f1f5f9;text-decoration:none;color:#1e293b;font-weight:600}
 .v175-modebar{display:flex;align-items:center;gap:5px;flex-wrap:wrap;border-radius:12px;padding:8px;margin:8px 0;background:#dbeafe;color:#1e40af}.v175-modebar[hidden]{display:none}.v175-modebar strong{font-size:13px;flex:1 1 100%}.v175-modebar button{width:auto!important;min-height:33px!important;margin:0!important;padding:5px 8px!important;background:#fff!important;color:#1e40af!important;font-size:12px!important}.v175-bottom{display:flex;gap:8px;position:sticky;bottom:6px;z-index:12;background:var(--card,#fff);padding:7px 0}.v175-bottom #go-today{flex:1;margin:0!important}.v175-cancel{width:auto!important;margin:0!important;background:#e2e8f0!important;color:#334155!important}.v175-cancel[hidden]{display:none}.v175-adding .v175-modebar{background:#dbeafe}.v175-editing .v175-modebar{background:#ffedd5;color:#9a3412}.v175-editing .v175-modebar button{color:#9a3412!important}.v175-editing .v175-bottom #go-today{background:#ea580c!important}.v175-adding .day.v175-picked,.v175-editing .day.v175-picked{outline:2px solid #2563eb;outline-offset:-2px;background:#dbeafe!important}.v175-editing .day.v175-picked{outline-color:#ea580c;background:#ffedd5!important}.v175-adding .day.v175-picked::after,.v175-editing .day.v175-picked::after{content:'✓';position:absolute;right:3px;bottom:1px;font-size:12px;font-weight:800}.calendar-grid .day{position:relative;min-width:0;overflow:hidden}.calendar-grid .day .work-small{display:none!important}.calendar-grid .day .v175-dot{width:5px!important;height:5px!important;min-width:5px!important;min-height:5px!important;display:inline-block!important;border-radius:50%!important;margin:1px!important;font-size:0!important}.calendar-grid .day .work-dot{background:#3b82f6!important}.calendar-grid .day .dot{background:#10b981!important}.v175-feedback{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px;border-radius:9px;background:#e0f2fe;font-size:12px}.v175-feedback[hidden]{display:none}.v175-feedback button{width:auto!important;margin:0!important;padding:7px!important}.v175-dialog{border:0;border-radius:18px;width:min(92vw,430px);max-height:85dvh;overflow-y:auto;padding:18px;background:#fff;color:#17243a}.v175-dialog::backdrop{background:#0f172a99}.v175-dialog label{display:block;margin:10px 0;font-size:13px}.v175-dialog input:not([type=checkbox]),.v175-dialog select{display:block;width:100%;min-height:40px;margin-top:5px}.v175-dialog button{margin-top:8px}.v175-choice{display:block;width:100%;padding:10px;margin:6px 0;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc}.v175-edit-existing{width:auto!important;margin:8px 0!important;padding:7px 10px!important;font-size:12px!important;background:#ffedd5!important;color:#9a3412!important}.v175-edit-existing+*{margin-top:0}
 body.v173-dark .v175-drawer,body.v173-dark .v175-dialog{background:#111827;color:#e2e8f0}body.v173-dark .v175-drawer-links a{background:#293449;color:#e2e8f0}body.v173-dark .v175-bottom{background:#111827}body.v173-dark .v175-dialog label{color:#e2e8f0}
+
+/* v17.6: weekends/holidays color only the numerals, not cell backgrounds or borders. */
+#calendar .day.jpn-sunday,#calendar .day.jpn-holiday,#calendar .day.jpn-saturday:not(.jpn-holiday){background:var(--v176-cell-bg,#f8fafc)!important;border-color:#e1e7f0!important;color:inherit!important}
+#calendar .day.jpn-sunday,#calendar .day.jpn-holiday{color:#be123c!important}
+#calendar .day.jpn-saturday:not(.jpn-holiday){color:#2563eb!important}
+body.v17-no-sun #calendar .day.jpn-sunday:not(.jpn-holiday){color:inherit!important}
+body.v17-no-sat #calendar .day.jpn-saturday:not(.jpn-holiday){color:inherit!important}
+body.v17-no-holiday #calendar .day.jpn-holiday:not(.jpn-sunday):not(.jpn-saturday){color:inherit!important}
+/* Today's border belongs to the real date only, never to the last tapped date. */
+#calendar .day.selected:not(.today){outline:none!important;border-color:#e1e7f0!important}
+#calendar .day.today{border:2px solid #2563eb!important}
+#calendar .day.selected:not(.today){background:#e9f1fb!important}
+/* Existing registered holidays are distinguished by a small badge, not an overpowering frame. */
+#calendar .day.holiday{background:var(--v176-cell-bg,#f8fafc)!important;border-color:#e1e7f0!important}
+#calendar .day.holiday.today{border-color:#2563eb!important}
+/* In holiday selection mode, clear the today and viewed-day emphasis entirely. */
+body.v176-holiday-mode #calendar .day{background:#f0fdf4!important;border:1px solid #d1fae5!important;outline:none!important}
+body.v176-holiday-mode #calendar .day.today,body.v176-holiday-mode #calendar .day.selected{background:#f0fdf4!important;border:1px solid #d1fae5!important;outline:none!important}
+body.v176-holiday-mode #calendar .day.multi-picked,body.v176-holiday-mode #calendar .day.multi-picked.today,body.v176-holiday-mode #calendar .day.multi-picked.selected{background:#bbf7d0!important;border:2px solid #15803d!important;outline:2px solid #15803d!important;outline-offset:-2px}
+body.v176-holiday-mode #calendar .day.multi-picked::after{content:'✓';position:absolute;right:3px;bottom:1px;color:#166534;font-size:13px;font-weight:900}
+body.v176-holiday-mode #calendar .day.multi-picked .holiday-label{color:#166534}
+body.v176-holiday-mode .v173-holiday-bar{background:#dcfce7;border-color:#86efac;color:#166534}
+body.v176-holiday-mode .v173-holiday-bar button{background:#15803d}
+body.v176-holiday-mode .v173-holiday-start[aria-pressed=true]{background:#15803d}
+/* Work selection supersedes today/view selection, including weekends. */
+body.v175-adding #calendar .day.v175-picked,body.v175-editing #calendar .day.v175-picked{background:#dbeafe!important;border:2px solid #2563eb!important;outline:2px solid #2563eb!important;outline-offset:-2px}
+body.v175-editing #calendar .day.v175-picked{background:#ffedd5!important;border-color:#ea580c!important;outline-color:#ea580c!important}
+body.v175-adding #calendar .day.v175-picked::after{color:#1d4ed8}
+body.v175-editing #calendar .day.v175-picked::after{color:#9a3412}
+body.v175-adding #calendar .day.today:not(.v175-picked),body.v175-editing #calendar .day.today:not(.v175-picked){border-color:#e1e7f0!important}
+body.v173-dark #calendar .day.jpn-sunday,body.v173-dark #calendar .day.jpn-holiday,body.v173-dark #calendar .day.jpn-saturday:not(.jpn-holiday),body.v173-dark #calendar .day.holiday{--v176-cell-bg:#273449;border-color:#334155!important}
+body.v173-dark #calendar .day.selected:not(.today){background:#334866!important}
+body.v173-dark.v176-holiday-mode #calendar .day{background:#15392e!important;border-color:#225846!important}
+body.v173-dark.v176-holiday-mode #calendar .day.multi-picked{background:#166534!important;color:#f0fdf4!important;border-color:#4ade80!important}
+body.v173-dark.v176-holiday-mode #calendar .day.multi-picked::after{color:#f0fdf4}
+
+/* v17.6.1: inline settings choices, no iOS native select popup */
+.v176-choice{border:1px solid #e1e8f0;border-radius:12px;margin:10px 0;overflow:hidden;background:#fff;color:#243047}
+.v176-choice>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;padding:15px 13px;font-size:14px;font-weight:700;list-style:none}
+.v176-choice>summary::-webkit-details-marker{display:none}
+.v176-current{font-size:12px;font-weight:500;color:#64748b;text-align:right}
+.v176-current::after{content:'  ▾';color:#64748b}
+.v176-options{display:grid;gap:6px;padding:0 10px 10px}
+.v176-option{width:100%;border:1px solid #dbe5f0;border-radius:9px;background:#f7f9fc;color:#243047;padding:12px;text-align:left;font-size:14px}
+.v176-option[aria-pressed=true]{border-color:#2563eb;background:#eff6ff;color:#1d4ed8;font-weight:700}
+.v176-option[aria-pressed=true]::before{content:'✓  '}
+body.v173-dark .v176-choice{background:#1e293b;border-color:#475569;color:#e2e8f0}
+body.v173-dark .v176-current{color:#cbd5e1}
+body.v173-dark .v176-option{background:#334155;color:#e2e8f0;border-color:#475569}
+body.v173-dark .v176-option[aria-pressed=true]{background:#1e3a5f;color:#bfdbfe;border-color:#60a5fa}
+
+/* v17.6.2: fixed-height compact days; one marker per holiday, no stacked labels */
+#calendar .day{min-height:0!important;height:54px!important;max-height:54px!important;overflow:hidden!important;position:relative;align-content:center}
+#calendar .day .holiday-label{display:none!important}
+#calendar .day .v176-holiday-dot{display:block!important;width:6px;height:6px;border-radius:50%;background:#16a34a;flex:none;margin:2px auto 0}
+body.v176-holiday-mode #calendar .day.multi-picked{background:#bbf7d0!important;border:2px solid #15803d!important}

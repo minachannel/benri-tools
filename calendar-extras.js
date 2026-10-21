@@ -3,20 +3,27 @@
 const $=id=>document.getElementById(id),HOL="benri-tools-holidays-v1",WORK="benri-tools-work-v2";
 let holidays={};try{const h=JSON.parse(localStorage.getItem(HOL)||"{}");if(h&&typeof h==="object"&&!Array.isArray(h))holidays=h;}catch(e){}
 let choosing=false;const picked=new Set();
+function finishHolidaySelection(){choosing=false;picked.clear();$("holiday-actions").hidden=true;$("holiday-mode").textContent="休日を選択";renderHoliday();document.dispatchEvent(new Event("holiday-selection-ended"));}
 const save=()=>{try{localStorage.setItem(HOL,JSON.stringify(holidays));return true;}catch(e){$("holiday-status").textContent="休日を保存できませんでした。";return false;}};
 function renderHoliday(){
+ document.body.classList.toggle('v176-holiday-mode',choosing);
  const prefix=`${year}-${pad(month+1)}-`;
  document.querySelectorAll("#calendar .day").forEach(b=>{
   const d=Number(b.firstChild?.textContent),date=prefix+pad(d);
   b.classList.toggle("holiday",!!holidays[date]);b.classList.toggle("multi-picked",picked.has(date));
-  if(holidays[date]){const tag=document.createElement("span");tag.className="holiday-label";tag.textContent="休み";b.append(tag);}
+  if(choosing)b.setAttribute('aria-pressed',String(picked.has(date)));
+  b.querySelectorAll(".holiday-label").forEach(tag=>tag.remove());
+  // Compact calendar: show a single indicator, never append repeated holiday text.
+  b.querySelectorAll('.v176-holiday-dot').forEach(n=>n.remove());
+  if(holidays[date]){const mark=document.createElement('span');mark.className='v176-holiday-dot';mark.setAttribute('aria-hidden','true');b.append(mark);}
+  b.dataset.holidayDate=date;
  });
  $("holiday-count").textContent=`${picked.size}日選択`;
 }
 window.holidayTap=date=>{if(!choosing)return false;picked.has(date)?picked.delete(date):picked.add(date);renderHoliday();return true;};
 $("holiday-mode").addEventListener("click",()=>{choosing=!choosing;picked.clear();$("holiday-actions").hidden=!choosing;$("holiday-mode").textContent=choosing?"選択モード中":"休日を選択";renderHoliday();});
-$("holiday-cancel").addEventListener("click",()=>{choosing=false;picked.clear();$("holiday-actions").hidden=true;$("holiday-mode").textContent="休日を選択";renderHoliday();});
-function apply(value){if(!picked.size){$("holiday-status").textContent="日付を選んでください。";return;}const backup={...holidays};picked.forEach(d=>{if(value)holidays[d]=true;else delete holidays[d];});if(!save()){holidays=backup;return;}$("holiday-status").textContent=`${picked.size}日を${value?"休日に設定":"休日解除"}しました。`;picked.clear();renderHoliday();}
+$("holiday-cancel").addEventListener("click",finishHolidaySelection);
+function apply(value){if(!picked.size){$("holiday-status").textContent="日付を選んでください。";return;}const backup={...holidays};picked.forEach(d=>{if(value)holidays[d]=true;else delete holidays[d];});if(!save()){holidays=backup;return;}$("holiday-status").textContent=`${picked.size}日を${value?"休日に設定":"休日解除"}しました。`;finishHolidaySelection();}
 $("holiday-apply").addEventListener("click",()=>apply(true));$("holiday-remove").addEventListener("click",()=>apply(false));
 function eventHistory(){const values=new Set();Object.values(data).forEach(arr=>{if(Array.isArray(arr))arr.forEach(e=>{const t=typeof e==="string"?e:e?.text;if(t)values.add(t);});});const sel=$("event-history");sel.replaceChildren(new Option("履歴を選択",""));[...values].reverse().slice(0,60).forEach(t=>sel.add(new Option(t,t)));}
 $("copy-event").addEventListener("click",()=>{if($("event-history").value)$("event-text").value=$("event-history").value;});
